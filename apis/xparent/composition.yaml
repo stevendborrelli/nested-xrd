@@ -1,0 +1,38 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xparent.example.org
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  compositeTypeRef:
+    apiVersion: example.org/v1alpha1
+    kind: XParent
+  resources:
+    - name: xchild
+      base:
+        apiVersion: example.org/v1alpha1
+        kind: XChild
+        spec:
+          forProvider: {}
+      patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.parameters.id
+        toFieldPath: spec.parameters.id
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.vpcid
+        toFieldPath: status.vpcid
+        # policy:
+        #   fromFieldPath: Required
+    - name: xtarget
+      base:
+        apiVersion: example.org/v1alpha1
+        kind: XTarget
+        spec:
+          parameters: {}
+      patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: status.vpcid
+        toFieldPath: spec.parameters.vpcid
+        # Uncomment for this to work
+        # policy:
+        #   fromFieldPath: Required
