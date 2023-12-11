@@ -1,0 +1,25 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xtarget.example.org
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  compositeTypeRef:
+    apiVersion: example.org/v1alpha1
+    kind: XTarget
+  resources:
+    - name: subnet
+      base:
+        apiVersion: ec2.aws.upbound.io/v1beta1
+        kind: Subnet
+        spec:
+          forProvider:
+            cidrBlock: 192.168.0.0/18
+            mapPublicIpOnLaunch: true
+            region: us-west-1
+      patches:
+      - type: FromCompositeFieldPath
+        fromFieldPath: spec.parameters.vpcid
+        toFieldPath: spec.forProvider.vpcId
+        # policy:
+        #   fromFieldPath: Required

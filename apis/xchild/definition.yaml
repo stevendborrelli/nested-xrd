@@ -1,0 +1,33 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xchilds.example.org
+spec:
+  group: example.org
+  names:
+    kind: XChild
+    plural: xchilds
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  description: Configuration parameters
+                  properties:
+                    id:
+                      type: string                   
+            status:
+              type: object
+              properties:
+                vpcid:
+                  type: string
+                fromChild:
+                  type: string
